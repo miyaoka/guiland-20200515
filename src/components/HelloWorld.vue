@@ -6,17 +6,17 @@
     <div class="control">
       <label>
         seed
-        <input v-model="seed" type="range" min="0" max="100" step="1" />
+        <input v-model="seed" type="range" min="0" :max="seedMax" step="1" />
         {{ seed }}
       </label>
       <label>
         freq
-        <input v-model="freq" type="range" min="0.001" max="0.2" step="any" />
+        <input v-model="freq" type="range" min="0.001" max="0.1" step="any" />
         {{ freq }}
       </label>
       <label>
         octaves
-        <input v-model="octaves" type="range" min="0" max="5" step="1" />
+        <input v-model="octaves" type="range" min="1" max="5" step="1" />
         {{ octaves }}
       </label>
       <label>
@@ -25,9 +25,24 @@
         {{ scale }}
       </label>
       <label>
+        useAnimation
+        <input v-model="useAnimation" type="checkbox" />
+        <label>
+          fps
+          <input
+            v-model="fps"
+            :disabled="!useAnimation"
+            type="range"
+            min="5"
+            max="60"
+            step="1"
+          />
+          {{ fps }}
+        </label>
+      </label>
+      <label>
         useDisplacement
         <input v-model="useDisplacement" type="checkbox" />
-        {{ useDisplacement }}
       </label>
     </div>
 
@@ -70,11 +85,40 @@ export default Vue.extend({
   data() {
     return {
       seed: 0,
-      freq: 0.05,
+      seedMax: 1000,
+      freq: 0.01,
       octaves: 2,
-      scale: 50,
+      scale: 10,
       useDisplacement: true,
+      useAnimation: true,
+      timerId: 0,
+      fps: 10,
     }
+  },
+  watch: {
+    fps() {
+      if (!this.useAnimation) return
+      this.setAnimate()
+    },
+    useAnimation: {
+      immediate: true,
+      handler(val: boolean) {
+        if (val) {
+          this.setAnimate()
+        } else {
+          clearInterval(this.timerId)
+        }
+      },
+    },
+  },
+  methods: {
+    setAnimate() {
+      clearInterval(this.timerId)
+      this.timerId = setInterval(this.animate, 1000 / this.fps)
+    },
+    animate() {
+      this.seed = (this.seed + 1) % this.seedMax
+    },
   },
 })
 </script>
@@ -83,7 +127,7 @@ export default Vue.extend({
 .control {
   display: flex;
   flex-direction: column;
-  > * {
+  label {
     display: flex;
     flex-direction: column;
   }
