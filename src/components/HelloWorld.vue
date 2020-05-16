@@ -6,17 +6,29 @@
     <div class="control">
       <label>
         seed
-        <input v-model="seed" type="range" min="0" :max="seedMax" step="1" />
+        <input
+          v-model.number="seed"
+          type="range"
+          min="0"
+          :max="seedMax"
+          step="1"
+        />
         {{ seed }}
       </label>
       <label>
         freq
-        <input v-model="freq" type="range" min="0.001" max="0.1" step="any" />
+        <input
+          v-model.number="freq"
+          type="range"
+          min="0.001"
+          max="0.1"
+          step="any"
+        />
         {{ freq }}
       </label>
       <label>
         octaves
-        <input v-model="octaves" type="range" min="1" max="5" step="1" />
+        <input v-model.number="octaves" type="range" min="1" max="5" step="1" />
         {{ octaves }}
       </label>
       <label>
